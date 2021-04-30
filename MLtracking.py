@@ -129,6 +129,7 @@ def process(im):
 
 def eyetrack(xshift = 30, yshift=150, frameShrink = 0.15):
     # X classifiers
+    print("Starting...")
     sixn = sixnine().to(device)
     sixn.load_state_dict(torch.load("xModels/69good.plt",map_location=device))
     sixn.eval()
@@ -160,13 +161,19 @@ def eyetrack(xshift = 30, yshift=150, frameShrink = 0.15):
     margin = 200
     margin2 = 50
 
+
+    print("Before while: frameShrink " + str(frameShrink))
+
     while True:
         ret, frame = webcam.read()
         smallframe = cv.resize(copy.deepcopy(frame), (0, 0), fy=frameShrink, fx=frameShrink)
         smallframe = cv.cvtColor(smallframe, cv.COLOR_BGR2GRAY)
 
         feats = face_recognition.face_landmarks(smallframe)
+
+        print("While before if...")
         if len(feats) > 0:
+            print("Feats : " + str(len(feats)))
             leBds, leCenter = maxAndMin(feats[0]['left_eye'], mult=1/frameShrink)
             left_eye = frame[leBds[1]:leBds[3], leBds[0]:leBds[2]]
 
@@ -205,6 +212,7 @@ def eyetrack(xshift = 30, yshift=150, frameShrink = 0.15):
                 #     mvAvgy = mvAvgy[1:]
                 pyautogui.moveTo(720,450)
                 pyautogui.moveTo(avx,avy)
+                print("Move to : " + str(avx) + "," + str(avy))
 
 
 
@@ -220,4 +228,4 @@ def eyetrack(xshift = 30, yshift=150, frameShrink = 0.15):
 
 
 
-# eyetrack()
+eyetrack(30, 150, 0.15)
